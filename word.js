@@ -1,11 +1,13 @@
 var Letter = require("./letter.js");
 var charsUsed = [];
 var ltrShow = "";
-
+const red = "\x1b[31m%s\x1b[0m";
+const green = "\x1b[32m%s\x1b[0m";
 
 function Word(word) {
     this.word = word;
     this.lettersArray = [];
+    this.guessesRemaining = 12;
 
     this.initialize = function() {
         ltrShow = "";
@@ -17,54 +19,54 @@ function Word(word) {
             ltrShow += letter + " ";
             this.lettersArray.push(ltrObj);
         }
-        console.log("Name of Movie: " + ltrShow);
-        console.log("Letters Used: none");
         console.log();
+        console.log(ltrShow);
+        console.log();
+        console.log();
+        console.log("Letters Used: none");
+        console.log("Guesses Remaining: " + this.guessesRemaining);
      }
    
     this.getLetters = function(newChar) {
-        if (newChar.match(/^[A-Z]*$/)) {
+        var newCharFound = false;
+        if (newChar.match(/^[A-Z]*$/)) {  // newChar is a letter
             ltrShow = "";
-            var newCharFound = false;
-            if (!charsUsed.includes(newChar)) {
+            if (!charsUsed.includes(newChar)) {  // newChar has not been used before
                 charsUsed.push(newChar);
-            }
-            for (var i=0; i<this.lettersArray.length; i++) {
-                if (newChar === this.lettersArray[i].char) {
-                    this.lettersArray[i].guessed = true;
+                for (var i=0; i<this.lettersArray.length; i++) {
+                    if (newChar === this.lettersArray[i].char) {
+                        newCharFound = true;
+                        this.lettersArray[i].guessed = true;
+                    }
+                    var letter = this.lettersArray[i].returnWhat();
+                    ltrShow += letter + " ";
                 }
-                var letter = this.lettersArray[i].returnWhat();
-                ltrShow += letter + " ";
-                
+                if (!newCharFound) {
+                    this.guessesRemaining--;
+                    console.log();
+                    console.log(red, "Incorrect!!");
+                }
+                else {
+                    console.log();
+                    console.log(green, "Correct!!");
+                }
+                console.log();
+                console.log(ltrShow);
+                console.log();
+                console.log();
+                console.log("Guesses Remaining: " + this.guessesRemaining);
+                console.log("Letters Used: " + charsUsed);
+                console.log();
             }
-            
-            console.log("Name of Movie: " + ltrShow);
-            console.log("Letters Used: " + charsUsed);
-            console.log();
+            else {
+                console.log();
+                console.log(red, "This letter has already been used...");
+            }
         }
         else {
-            console.log("This character is not a letter...");
             console.log();
+            console.log(red, "This character is not a letter...");
         }
     }
-   
 }
 module.exports = Word;
-
-
-/*
-for (var i=0; i<word.length; i++){
-        var ltrObj = new Letter(word[i]);
-        ltrShow = ltrObj.returnWhat();
-        if (ltrObj.guessed) {
-            charsUsed.push(ltrObj.char);
-            console.log("Chars Used #1: " + charsUsed);
-            ltrCount++;
-        }
-        this.lettersArray.push(ltrObj);
-        wordStr += ltrShow + " "; 
-    }
-    console.log(wordStr);
-*/
-
-
